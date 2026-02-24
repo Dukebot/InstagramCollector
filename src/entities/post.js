@@ -15,8 +15,9 @@ class Post {
     time = null,
     location = null,
     socialNetwork = "Instagram",
-    accountUsername = null,
-    accountId = null,
+    user = {},
+    // accountUsername = null,
+    // accountId = null,
     likeCount = null,
     commentCount = null,
     images = [],
@@ -27,6 +28,7 @@ class Post {
     this.fbId = fbId
     this.mediaId = mediaId
     this.code = code
+    this.user = user.id ? { id: user.id, username: user.username } : null,
     this.title = title
     this.text = text
     this.externalUrl = externalUrl
@@ -35,8 +37,8 @@ class Post {
     this.time = time
     this.location = location ? new Location(location) : null
     this.socialNetwork = socialNetwork
-    this.accountUsername = accountUsername
-    this.accountId = accountId
+    // this.accountUsername = accountUsername
+    // this.accountId = accountId
     this.likeCount = likeCount
     this.commentCount = commentCount
     this.images = images
