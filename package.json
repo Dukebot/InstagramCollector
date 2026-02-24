@@ -1,0 +1,20 @@
+{
+  "name": "instagram-collector",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Dukebot/InstagramCollector#readme",
+  "bugs": {
+    "url": "https://github.com/Dukebot/InstagramCollector/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dukebot/InstagramCollector.git"
+  },
+  "license": "MIT",
+  "author": "Dukebot",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
