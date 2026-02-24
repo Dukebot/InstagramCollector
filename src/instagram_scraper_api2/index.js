@@ -5,11 +5,11 @@ const InstagramScraperAPI2ResponseProcessor = require("./response_processor")
  * Servicio para interactuar con el scraper de Instagram de Rapid API.
  */
 class InstagramScraperAPI2Service {
-  constructor({ apiHost, apiKey }) {
+  constructor({ apiKey }) {
     /**
      * Cliente para instaractuar con Instagram a través de Rapid API.
      */
-    this.client = new InstagramScraperAPI2Client({ apiHost, apiKey })
+    this.client = new InstagramScraperAPI2Client({ apiKey })
     /**
      * Procesador de respuestas para formato unificado.
      */

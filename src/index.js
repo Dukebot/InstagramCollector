@@ -1,14 +1,21 @@
+const fs = require('fs')
 const InstagramScraperAPI2Service = require("./instagram_scraper_api2")
 
 /**
  * Servicio para extraer datos de Instagram.
  */
 class InstagramScraperAPI {
-  constructor({ apiHost, apiKey, logInfoFn }) {
+  static fromEnv() {
+    return new InstagramScraperAPI({
+      apiKey: process.env.API_KEY
+    })
+  }
+
+  constructor({ apiKey, logInfoFn }) {
     if (logInfoFn && typeof logInfoFn !== "function") {
       throw Error("logInfoFn must be a function")
     }
-    this.service = new InstagramScraperAPI2Service({ apiHost, apiKey })
+    this.service = new InstagramScraperAPI2Service({ apiKey })
     this.logInfoFn = logInfoFn
   }
 
@@ -18,6 +25,11 @@ class InstagramScraperAPI {
     } else {
       console.log("InstagramScraperAPIService", message, data)
     }
+  }
+
+  saveJson(path, data) {
+    if (!path.endsWith('.json')) path += '.json'
+    fs.writeFileSync(outputPath, JSON.stringify(data, null, 2));
   }
 
   async getUserInfo(usernameOrId) {
