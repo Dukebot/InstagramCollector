@@ -1,3 +1,4 @@
+/** Input shape used to build a `Location` entity. */
 export interface LocationInput {
   pk?: string | number | null;
   shortName?: string | null;
@@ -12,6 +13,7 @@ export interface LocationInput {
   isEligibleForGuides?: boolean | null;
 }
 
+/** Normalized location entity used by posts. */
 export default class Location {
   pk: string | number | null;
   shortName: string | null;
@@ -25,6 +27,7 @@ export default class Location {
   lat: number | null;
   isEligibleForGuides: boolean | null;
 
+  /** Creates a normalized `Location` instance. */
   constructor(data: LocationInput = {}) {
     this.pk = data.pk ?? null;
     this.shortName = data.shortName ?? null;
