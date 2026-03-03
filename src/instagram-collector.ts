@@ -2,9 +2,17 @@ import path from 'path';
 import InstagramScraperAPI from './instagram-scraper-api';
 import FileCache from './utils/file-cache';
 
+/** Callback executed for every collected user info item. */
 type UserInfoCallback = (userInfo: unknown) => Promise<void> | void;
+/** Callback executed for every collected user posts item. */
 type UserPostsCallback = (userPosts: unknown) => Promise<void> | void;
 
+/**
+ * High-level Instagram data collector.
+ *
+ * This class orchestrates profile/posts collection for multiple usernames or IDs,
+ * and can optionally cache responses on disk to reduce API calls.
+ */
 export default class InstagramCollector {
   private scraper: InstagramScraperAPI;
   private usernamesOrIds?: string[];
@@ -14,6 +22,9 @@ export default class InstagramCollector {
   private cache: FileCache | null;
   private _cacheInitPromise: Promise<void> | null;
 
+  /**
+   * Creates a new collector instance.
+   */
   constructor({
     apiKey,
     usernamesOrIds,
@@ -50,12 +61,16 @@ export default class InstagramCollector {
     this._cacheInitPromise = this.cache ? this.cache.init() : null;
   }
 
+  /** Ensures the file cache directory exists before first cached operation. */
   private async _ensureCacheReady(): Promise<void> {
     if (this._cacheInitPromise) {
       await this._cacheInitPromise;
     }
   }
 
+  /**
+   * Collects user profile information for the provided usernames/ids.
+   */
   async collectUserInfo({
     usernamesOrIds = this.usernamesOrIds,
     onUserInfo = this.onUserInfo,
@@ -98,6 +113,9 @@ export default class InstagramCollector {
     return responses;
   }
 
+  /**
+   * Collects user posts for the provided usernames/ids.
+   */
   async collectUserPosts({
     usernamesOrIds = this.usernamesOrIds,
     numPosts,

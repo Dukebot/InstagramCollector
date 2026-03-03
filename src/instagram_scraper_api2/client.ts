@@ -1,5 +1,8 @@
 import axios, { type AxiosInstance } from 'axios';
 
+/**
+ * HTTP client for the `instagram-scraper-api2` RapidAPI endpoints.
+ */
 export default class InstagramScraperAPI2Client {
   private client: AxiosInstance;
 
@@ -18,6 +21,9 @@ export default class InstagramScraperAPI2Client {
     });
   }
 
+  /**
+   * Performs a GET request and normalizes scraper-level API errors.
+   */
   async get(url: string, options?: Record<string, unknown>): Promise<any> {
     try {
       const response = await this.client.get(url, options).then((res) => res.data);
@@ -33,6 +39,9 @@ export default class InstagramScraperAPI2Client {
     }
   }
 
+  /**
+   * Fetches raw profile data by username, id, or profile URL.
+   */
   async getUserInfo(usernameOrIdOrUrl: string): Promise<any> {
     if (!usernameOrIdOrUrl) throw new Error('username_or_id_or_url is required');
     return this.get('/v1/info', {
@@ -40,6 +49,9 @@ export default class InstagramScraperAPI2Client {
     });
   }
 
+  /**
+   * Fetches raw post feed data by username, id, or profile URL.
+   */
   async getUserPosts(usernameOrIdOrUrl: string): Promise<any> {
     if (!usernameOrIdOrUrl) throw new Error('username_or_id_or_url is required');
     return this.get('/v1.2/posts', {

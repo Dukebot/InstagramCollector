@@ -2,23 +2,29 @@ import fsp from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
 
+/** Constructor options for `FileCache`. */
 interface FileCacheOptions {
   dir: string;
   defaultTtlMs?: number;
   maxKeyLength?: number;
 }
 
+/** Optional controls for `wrap()`. */
 interface WrapOptions {
   ttlMs?: number;
   force?: boolean;
 }
 
+/** Optional controls for `set()`. */
 interface SetOptions {
   ttlMs?: number;
 }
 
 type CacheMemEntry = { value: unknown; expiresAt: number | null };
 
+/**
+ * Minimal file-based cache with TTL and in-flight deduplication.
+ */
 export default class FileCache {
   private dir: string;
   private defaultTtlMs: number;
@@ -26,6 +32,9 @@ export default class FileCache {
   private _mem: Map<string, CacheMemEntry>;
   private _inflight: Map<string, Promise<unknown>>;
 
+  /**
+   * Creates a cache instance bound to a directory on disk.
+   */
   constructor({ dir, defaultTtlMs = 60_000, maxKeyLength = 200 }: FileCacheOptions) {
     if (!dir) throw new Error("FileCache: 'dir' es obligatorio");
     this.dir = dir;
@@ -35,10 +44,12 @@ export default class FileCache {
     this._inflight = new Map();
   }
 
+  /** Ensures the cache directory exists. */
   async init(): Promise<void> {
     await fsp.mkdir(this.dir, { recursive: true });
   }
 
+  /** Builds a safe file path for a cache key. */
   private _filePath(key: string): string {
     if (typeof key !== 'string' || !key) {
       throw new Error('FileCache: key inválida');
@@ -49,6 +60,7 @@ export default class FileCache {
     return path.join(this.dir, `${prefix}.${hash}.json`);
   }
 
+  /** Reads a value from memory/disk cache if present and valid. */
   async get(key: string): Promise<unknown | null> {
     const memEntry = this._mem.get(key);
     if (memEntry) {
@@ -86,6 +98,7 @@ export default class FileCache {
     return value ?? null;
   }
 
+  /** Writes a value to cache with optional TTL override. */
   async set(key: string, value: unknown, { ttlMs }: SetOptions = {}): Promise<boolean> {
     const expiresAt =
       ttlMs === 0 ? null : Date.now() + (typeof ttlMs === 'number' ? ttlMs : this.defaultTtlMs);
@@ -103,6 +116,7 @@ export default class FileCache {
     return true;
   }
 
+  /** Deletes a cache entry from memory and disk. */
   async del(key: string): Promise<boolean> {
     this._mem.delete(key);
     const file = this._filePath(key);
@@ -110,6 +124,7 @@ export default class FileCache {
     return true;
   }
 
+  /** Deletes a file and ignores ENOENT. */
   private async _safeUnlink(file: string): Promise<void> {
     try {
       await fsp.unlink(file);
@@ -118,6 +133,9 @@ export default class FileCache {
     }
   }
 
+  /**
+   * Returns cached value if available; otherwise resolves, stores and returns a fresh value.
+   */
   async wrap(key: string, fn: () => Promise<unknown>, { ttlMs, force = false }: WrapOptions = {}): Promise<unknown> {
     if (!force) {
       const cached = await this.get(key);
@@ -142,6 +160,7 @@ export default class FileCache {
     return p;
   }
 
+  /** Removes expired/corrupt cache files and returns cleanup stats. */
   async cleanupExpired(): Promise<{ scanned: number; removed: number }> {
     await this.init();
     const files = await fsp.readdir(this.dir);
