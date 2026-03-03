@@ -1,15 +1,18 @@
 import Location, { type LocationInput } from './location';
 
+/** Minimal author reference embedded in a post entity. */
 export interface PostUserRef {
   id?: string | number | null;
   username?: string | null;
 }
 
+/** Media item representation used in post images/videos arrays. */
 export interface MediaItem {
   url: string;
   caption?: string | null;
 }
 
+/** Input shape used to build a `Post` entity. */
 export interface PostInput {
   pk?: string | number | null;
   id?: string | number | null;
@@ -30,6 +33,7 @@ export interface PostInput {
   videos?: MediaItem[];
 }
 
+/** Normalized Instagram post entity. */
 export default class Post {
   pk: string | number | null;
   id: string | number | null;
@@ -49,6 +53,7 @@ export default class Post {
   images: MediaItem[];
   videos: MediaItem[];
 
+  /** Creates a normalized `Post` instance. */
   constructor(data: PostInput = {}) {
     this.pk = data.pk ?? null;
     this.id = data.id ?? null;

@@ -1,3 +1,4 @@
+/** Input shape used to build an `InstagramUser` entity. */
 export interface InstagramUserInput {
   id?: string | number | null;
   fullName?: string | null;
@@ -6,6 +7,7 @@ export interface InstagramUserInput {
   externalUrl?: string | null;
 }
 
+/** Normalized Instagram user entity. */
 export default class InstagramUser {
   id: string | number | null;
   fullName: string | null;
@@ -13,6 +15,7 @@ export default class InstagramUser {
   biography: string | null;
   externalUrl: string | null;
 
+  /** Creates a normalized `InstagramUser` instance. */
   constructor(data: InstagramUserInput = {}) {
     this.id = data.id ?? null;
     this.fullName = data.fullName ?? null;
